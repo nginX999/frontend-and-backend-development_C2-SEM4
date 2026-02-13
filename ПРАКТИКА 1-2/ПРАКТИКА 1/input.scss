@@ -1,0 +1,26 @@
+$font-size--title: 24px;
+$primary-color: #cacaca;
+
+@mixin flex-center($flex, $flex-direction, $align-items) {
+    display: $flex;
+    flex-direction: $flex-direction;
+    align-items: $align-items;
+}
+
+.wrapper {
+    .card {
+        @include flex-center(flex, column, center);
+        margin: 0 auto;
+        width: 300px;
+        background-color: $primary-color;
+        padding: 15px;
+        border-radius: 15px;
+        &__title {
+            font-size: $font-size--title;
+            font-weight: 700;
+        }
+        &__image {
+            border: 3px solid #fff;
+        }
+    }
+}
