@@ -1,0 +1,294 @@
+$bg: #0b0f19;
+$panel: rgba(255, 255, 255, 0.03);
+$border: rgba(255, 255, 255, 0.10);
+$text: #e7eaf3;
+$primary: rgba(99, 102, 241, 0.55);
+$primaryBg: rgba(99, 102, 241, 0.18);
+$danger: rgba(239, 68, 68, 0.45);
+$dangerBg: rgba(239, 68, 68, 0.12);
+
+@mixin card($radius: 12px) {
+  border-radius: $radius;
+  border: 1px solid $border;
+  background: $panel;
+}
+
+@mixin container($w: 1000px) {
+  max-width: $w;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: $bg;
+  color: $text;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+}
+
+.header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+
+  &_inner {
+    @include container();
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &_right {
+    opacity: 0.75;
+    font-size: 13px;
+  }
+
+  .brand {
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  justify-content: center;  // центрируем main
+}
+
+.container {
+  @include container(1200px);
+  padding: 16px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;  // увеличил отступ
+  
+  .title {
+    margin: 0;
+    font-size: 24px;  // увеличил размер
+    font-weight: 600;
+  }
+}
+
+.btn {
+  padding: 8px 16px;  // увеличил горизонтальный padding
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  &-primary {
+    background: $primaryBg;
+    border: 1px solid $primary;
+    
+    &:hover {
+      background: rgba(99, 102, 241, 0.25);
+    }
+  }
+
+  &-danger {
+    background: $dangerBg;
+    border: 1px solid $danger;
+    
+    &:hover {
+      background: rgba(239, 68, 68, 0.2);
+    }
+  }
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.empty {
+  padding: 32px;
+  border-radius: 12px;
+  border: 1px dashed rgba(255, 255, 255, 0.18);
+  opacity: 0.85;
+  text-align: center;  // центрируем текст
+  font-size: 16px;
+}
+
+.productRow {
+  @include card(12px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 20px;  // увеличил отступы
+  width: 100%;
+  box-sizing: border-box;
+  transition: all 0.2s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+}
+
+.productMain {
+  display: flex;
+  align-items: center;
+  gap: 24px;  // увеличил промежутки
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.productId {
+  opacity: 0.6;
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+  min-width: 60px;  // фиксированная ширина для id
+}
+
+.productName {
+  font-weight: 600;
+  font-size: 16px;
+  min-width: 150px;  // фиксированная ширина для названия
+}
+
+.productCategory {
+  opacity: 0.85;
+  font-size: 14px;
+  min-width: 100px;  // фиксированная ширина для категории
+}
+
+.productPrice {
+  font-weight: 500;
+  color: #a5b4fc;  // более яркий цвет для цены
+  min-width: 80px;  // фиксированная ширина для цены
+}
+
+.productStock {
+  opacity: 0.85;
+  font-size: 14px;
+  min-width: 90px;  // фиксированная ширина для наличия
+}
+
+.productActions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;  // прижимаем к правому краю
+}
+
+.footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+  margin-top: 20px;
+
+  &_inner {
+    @include container(1200px);
+    padding: 20px 16px;
+    opacity: 0.7;
+    font-size: 14px;
+    text-align: center;  // центрируем текст футера
+  }
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 1000;
+}
+
+.modal {
+  width: 100%;
+  max-width: 480px;
+  border-radius: 16px;
+  border: 1px solid $border;
+  background: #0f1526;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+
+  &_header {
+    padding: 16px 20px;
+    border-bottom: 1px solid $border;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &_title {
+    font-weight: 700;
+    font-size: 18px;
+  }
+
+  &_footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 20px;
+  }
+}
+
+.iconBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-size: 16px;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+}
+
+.form {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  opacity: 0.95;
+  
+  span {
+    font-weight: 500;
+  }
+}
+
+.input {
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: inherit;
+  outline: none;
+  font-family: inherit;
+  font-size: 15px;
+  resize: vertical;
+  
+  &:focus {
+    border-color: $primary;
+    background: rgba(255, 255, 255, 0.06);
+  }
+}
