@@ -2,6 +2,30 @@
 import { getUsers, createUser, updateUser, deleteUser } from './api';
 import './App.css';
 
+/**
+ * @swagger
+ * /api/users:
+ *   get:
+ *     summary: Получить список пользователей
+ *     tags: [Users]
+ *     responses:
+ *       200:
+ *         description: Список пользователей
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                   name:
+ *                     type: string
+ *                   age:
+ *                     type: integer
+ */
+
 function App() {
   const [users, setUsers] = useState([]);
   const [name, setName] = useState('');

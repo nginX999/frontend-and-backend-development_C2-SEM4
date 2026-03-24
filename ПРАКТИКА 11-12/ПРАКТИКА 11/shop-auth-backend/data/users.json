@@ -1,0 +1,29 @@
+[
+  {
+    "id": "admin123",
+    "email": "admin@shop.com",
+    "first_name": "Admin",
+    "last_name": "System",
+    "role": "admin",
+    "isActive": true,
+    "hashedPassword": "$2b$10$cNKsdXZ9OzJBLbZihVklveBes8JY3oXH2VIH3AC62L5q1CwDmJs9W"
+  },
+  {
+    "id": "seller456",
+    "email": "seller@shop.com",
+    "first_name": "Иван",
+    "last_name": "Продавец",
+    "role": "seller",
+    "isActive": true,
+    "hashedPassword": "$2b$10$5jL8XLrcDCgjwZGFBsjZb.pPTSTwL9L/.UZRlOE5.XsWH2n0StFU."
+  },
+  {
+    "id": "IULLmUWW",
+    "email": "user@shop.com",
+    "first_name": "Фывфыв",
+    "last_name": "Ффывфыв",
+    "role": "user",
+    "isActive": true,
+    "hashedPassword": "$2b$10$imhBzvfWwq3H4TUi641NxuUudTGH7lsQE1jGLv5DC1KAx9dkt6gVK"
+  }
+]

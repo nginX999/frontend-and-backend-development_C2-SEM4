@@ -1,17 +1,15 @@
 const express = require('express');
 const { nanoid } = require('nanoid');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
 
-const app = express();
-const port = 3000;
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
 
-// Константы для JWT
-const JWT_SECRET = "your-secret-key-change-in-production";
-const ACCESS_EXPIRES_IN = "15m"; // 15 минут
+const app = express();
+const port = 3001;
 
 // Middleware
 app.use(express.json());
@@ -53,6 +51,62 @@ const writeData = (filePath, data) => {
 let users = readData(USERS_FILE, []);
 let products = readData(PRODUCTS_FILE, []);
 
+// Swagger configuration
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Shop API',
+      version: '1.0.0',
+      description: 'API для интернет-магазина с авторизацией',
+    },
+    servers: [
+      {
+        url: `http://localhost:${port}`,
+        description: 'Локальный сервер',
+      },
+    ],
+    components: {
+      schemas: {
+        User: {
+          type: 'object',
+          properties: {
+            id: { type: 'string', example: 'abc123' },
+            email: { type: 'string', example: 'user@example.com' },
+            first_name: { type: 'string', example: 'Иван' },
+            last_name: { type: 'string', example: 'Петров' }
+          }
+        },
+        Product: {
+          type: 'object',
+          properties: {
+            id: { type: 'string', example: 'prod123' },
+            title: { type: 'string', example: 'Смартфон' },
+            category: { type: 'string', example: 'Электроника' },
+            description: { type: 'string', example: 'Отличный смартфон' },
+            price: { type: 'number', example: 29999 }
+          }
+        }
+      }
+    }
+  },
+  apis: ['./app.js'],
+};
+
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// Middleware для логирования запросов
+app.use((req, res, next) => {
+  res.on('finish', () => {
+    console.log(`[${new Date().toISOString()}] [${req.method}] ${res.statusCode} ${req.path}`);
+    if (req.method === 'POST' || req.method === 'PUT' || req.method === 'PATCH') {
+      console.log('Body:', req.body);
+    }
+  });
+  next();
+});
+
 // Функции хеширования
 async function hashPassword(password) {
   const rounds = 10;
@@ -64,12 +118,13 @@ async function verifyPassword(password, passwordHash) {
 }
 
 // Вспомогательные функции
-function findUserByEmail(email) {
-  return users.find(u => u.email === email);
-}
-
-function findUserById(id) {
-  return users.find(u => u.id === id);
+function findUserByEmail(email, res) {
+  const user = users.find(u => u.email === email);
+  if (!user) {
+    res?.status(404).json({ error: "User not found" });
+    return null;
+  }
+  return user;
 }
 
 function findProductOr404(id, res) {
@@ -81,65 +136,70 @@ function findProductOr404(id, res) {
   return product;
 }
 
-// ============ JWT MIDDLEWARE ============
-function authMiddleware(req, res, next) {
-  const header = req.headers.authorization || "";
-
-  // Ожидаем формат: Bearer <token>
-  const [scheme, token] = header.split(" ");
-
-  if (scheme !== "Bearer" || !token) {
-    return res.status(401).json({ error: "Missing or invalid Authorization header" });
-  }
-
-  try {
-    const payload = jwt.verify(token, JWT_SECRET);
-    // сохраняем данные токена в req
-    req.user = payload; // { sub, email, first_name, last_name, iat, exp }
-    next();
-  } catch (err) {
-    return res.status(401).json({ error: "Invalid or expired token" });
-  }
-}
-
-// ============ ГЛАВНАЯ СТРАНИЦА ============
-app.get('/', (req, res) => {
-  res.json({ 
-    message: 'API интернет-магазина с JWT аутентификацией работает!',
-    endpoints: {
-      register: 'POST /api/auth/register',
-      login: 'POST /api/auth/login',
-      me: 'GET /api/auth/me (требуется токен)',
-      products: 'GET /api/products',
-      createProduct: 'POST /api/products',
-      getProduct: 'GET /api/products/:id',
-      updateProduct: 'PUT /api/products/:id (требуется токен)',
-      deleteProduct: 'DELETE /api/products/:id (требуется токен)'
-    }
-  });
-});
-
 // ============ МАРШРУТЫ АУТЕНТИФИКАЦИИ ============
 
-// Регистрация
+/**
+ * @swagger
+ * /api/auth/register:
+ *   post:
+ *     summary: Регистрация нового пользователя
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - first_name
+ *               - last_name
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: ivan@example.com
+ *               first_name:
+ *                 type: string
+ *                 example: Иван
+ *               last_name:
+ *                 type: string
+ *                 example: Петров
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 example: qwerty123
+ *     responses:
+ *       201:
+ *         description: Пользователь успешно создан
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Неверные данные или email уже существует
+ */
 app.post("/api/auth/register", async (req, res) => {
-  console.log('POST /api/auth/register called with body:', req.body);
-  
   const { email, first_name, last_name, password } = req.body;
 
+  // Валидация
   if (!email || !first_name || !last_name || !password) {
     return res.status(400).json({ error: "Все поля обязательны для заполнения" });
   }
 
+  // Проверка формата email
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
     return res.status(400).json({ error: "Некорректный формат email" });
   }
 
+  // Проверка длины пароля
   if (password.length < 6) {
     return res.status(400).json({ error: "Пароль должен содержать минимум 6 символов" });
   }
 
+  // Проверка уникальности email
   const existingUser = users.find(u => u.email === email);
   if (existingUser) {
     return res.status(400).json({ error: "Пользователь с таким email уже существует" });
@@ -158,15 +218,54 @@ app.post("/api/auth/register", async (req, res) => {
   users.push(newUser);
   writeData(USERS_FILE, users);
 
+  // Не возвращаем хеш пароля
   const { hashedPassword: _, ...userWithoutPassword } = newUser;
-  console.log('User created:', userWithoutPassword);
   res.status(201).json(userWithoutPassword);
 });
 
-// Вход с выдачей JWT токена
+/**
+ * @swagger
+ * /api/auth/login:
+ *   post:
+ *     summary: Вход в систему
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: ivan@example.com
+ *               password:
+ *                 type: string
+ *                 example: qwerty123
+ *     responses:
+ *       200:
+ *         description: Успешный вход
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 user:
+ *                   $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Отсутствуют обязательные поля
+ *       401:
+ *         description: Неверный пароль
+ *       404:
+ *         description: Пользователь не найден
+ */
 app.post("/api/auth/login", async (req, res) => {
-  console.log('POST /api/auth/login called with body:', req.body);
-  
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -181,55 +280,62 @@ app.post("/api/auth/login", async (req, res) => {
   const isValidPassword = await verifyPassword(password, user.hashedPassword);
   
   if (isValidPassword) {
-    // Создание access-токена
-    const accessToken = jwt.sign(
-      { 
-        sub: user.id,
-        email: user.email,
-        first_name: user.first_name,
-        last_name: user.last_name
-      },
-      JWT_SECRET,
-      { expiresIn: ACCESS_EXPIRES_IN }
-    );
-
     const { hashedPassword: _, ...userWithoutPassword } = user;
-    
-    console.log('Login successful for:', user.email);
     res.status(200).json({ 
       success: true, 
-      accessToken,
       user: userWithoutPassword 
     });
   } else {
-    console.log('Login failed: invalid password for', email);
     res.status(401).json({ error: "Неверный пароль" });
   }
 });
 
-// Защищённый маршрут - получение информации о текущем пользователе
-app.get("/api/auth/me", authMiddleware, (req, res) => {
-  console.log('GET /api/auth/me called by user:', req.user.email);
-  
-  const userId = req.user.sub;
-  const user = findUserById(userId);
-  
-  if (!user) {
-    return res.status(404).json({ error: "User not found" });
-  }
-
-  const { hashedPassword: _, ...userWithoutPassword } = user;
-  res.json(userWithoutPassword);
-});
-
 // ============ МАРШРУТЫ ДЛЯ ТОВАРОВ ============
 
-// Создание товара (НЕ защищённый маршрут - доступен всем)
+/**
+ * @swagger
+ * /api/products:
+ *   post:
+ *     summary: Создать новый товар
+ *     tags: [Products]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - title
+ *               - category
+ *               - description
+ *               - price
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 example: Смартфон Galaxy S23
+ *               category:
+ *                 type: string
+ *                 example: Электроника
+ *               description:
+ *                 type: string
+ *                 example: Флагманский смартфон с отличной камерой
+ *               price:
+ *                 type: number
+ *                 example: 79999
+ *     responses:
+ *       201:
+ *         description: Товар создан
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Product'
+ *       400:
+ *         description: Неверные данные
+ */
 app.post("/api/products", (req, res) => {
-  console.log('POST /api/products called with body:', req.body);
-  
   const { title, category, description, price } = req.body;
 
+  // Валидация
   if (!title?.trim() || !category?.trim() || !description?.trim() || price === undefined) {
     return res.status(400).json({ error: "Все поля обязательны для заполнения" });
   }
@@ -249,31 +355,105 @@ app.post("/api/products", (req, res) => {
   products.push(newProduct);
   writeData(PRODUCTS_FILE, products);
 
-  console.log('Product created:', newProduct);
   res.status(201).json(newProduct);
 });
 
-// Получение всех товаров (НЕ защищённый маршрут)
+/**
+ * @swagger
+ * /api/products:
+ *   get:
+ *     summary: Получить список всех товаров
+ *     tags: [Products]
+ *     responses:
+ *       200:
+ *         description: Список товаров
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Product'
+ */
 app.get("/api/products", (req, res) => {
-  console.log('GET /api/products called');
   res.json(products);
 });
 
-// Получение товара по ID (НЕ защищённый маршрут)
+/**
+ * @swagger
+ * /api/products/{id}:
+ *   get:
+ *     summary: Получить товар по ID
+ *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID товара
+ *     responses:
+ *       200:
+ *         description: Товар найден
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Product'
+ *       404:
+ *         description: Товар не найден
+ */
 app.get("/api/products/:id", (req, res) => {
-  console.log(`GET /api/products/${req.params.id} called`);
-  
   const id = req.params.id;
   const product = findProductOr404(id, res);
   if (!product) return;
   res.json(product);
 });
 
-// Обновление товара (ЗАЩИЩЁННЫЙ маршрут - требует токен)
-app.put("/api/products/:id", authMiddleware, (req, res) => {
-  console.log(`PUT /api/products/${req.params.id} called by user:`, req.user.email);
-  console.log('Body:', req.body);
-  
+/**
+ * @swagger
+ * /api/products/{id}:
+ *   put:
+ *     summary: Обновить товар полностью
+ *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID товара
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - title
+ *               - category
+ *               - description
+ *               - price
+ *             properties:
+ *               title:
+ *                 type: string
+ *               category:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               price:
+ *                 type: number
+ *     responses:
+ *       200:
+ *         description: Товар обновлён
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Product'
+ *       400:
+ *         description: Неверные данные
+ *       404:
+ *         description: Товар не найден
+ */
+app.put("/api/products/:id", (req, res) => {
   const id = req.params.id;
   const { title, category, description, price } = req.body;
 
@@ -282,6 +462,7 @@ app.put("/api/products/:id", authMiddleware, (req, res) => {
     return res.status(404).json({ error: "Product not found" });
   }
 
+  // Валидация
   if (!title?.trim() || !category?.trim() || !description?.trim() || price === undefined) {
     return res.status(400).json({ error: "Все поля обязательны для заполнения" });
   }
@@ -301,14 +482,29 @@ app.put("/api/products/:id", authMiddleware, (req, res) => {
   products[productIndex] = updatedProduct;
   writeData(PRODUCTS_FILE, products);
 
-  console.log('Product updated:', updatedProduct);
   res.json(updatedProduct);
 });
 
-// Удаление товара (ЗАЩИЩЁННЫЙ маршрут - требует токен)
-app.delete("/api/products/:id", authMiddleware, (req, res) => {
-  console.log(`DELETE /api/products/${req.params.id} called by user:`, req.user.email);
-  
+/**
+ * @swagger
+ * /api/products/{id}:
+ *   delete:
+ *     summary: Удалить товар
+ *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID товара
+ *     responses:
+ *       204:
+ *         description: Товар удалён
+ *       404:
+ *         description: Товар не найден
+ */
+app.delete("/api/products/:id", (req, res) => {
   const id = req.params.id;
   
   const exists = products.some(p => p.id === id);
@@ -319,13 +515,11 @@ app.delete("/api/products/:id", authMiddleware, (req, res) => {
   products = products.filter(p => p.id !== id);
   writeData(PRODUCTS_FILE, products);
 
-  console.log('Product deleted:', id);
   res.status(204).send();
 });
 
 // 404 для всех остальных маршрутов
 app.use((req, res) => {
-  console.log(`404: ${req.method} ${req.path} not found`);
   res.status(404).json({ error: "Not found" });
 });
 
@@ -337,11 +531,8 @@ app.use((err, req, res, next) => {
 
 // Запуск сервера
 app.listen(port, () => {
-  console.log(`✅ Сервер запущен на http://localhost:${port}`);
-  console.log(`🔐 JWT секрет: ${JWT_SECRET}`);
-  console.log(`⏱️  Время жизни токена: ${ACCESS_EXPIRES_IN}`);
-  console.log(`📝 Проверьте главную страницу: http://localhost:${port}`);
-  console.log(`📦 Товаров в базе: ${products.length}`);
+  console.log(`Сервер запущен на http://localhost:${port}`);
+  console.log(`Swagger UI доступен по адресу http://localhost:${port}/api-docs`);
   
   // Создание тестовых данных, если их нет
   if (products.length === 0) {
@@ -349,16 +540,16 @@ app.listen(port, () => {
       { id: nanoid(8), title: "Ноутбук Lenovo", category: "Электроника", description: "Мощный ноутбук для работы и игр", price: 65999 },
       { id: nanoid(8), title: "Наушники Sony", category: "Аксессуары", description: "Беспроводные наушники с шумоподавлением", price: 12990 },
       { id: nanoid(8), title: "Кофеварка DeLonghi", category: "Бытовая техника", description: "Автоматическая кофеварка для эспрессо", price: 45990 },
-      { id: nanoid(8), title: "Смартфон Xiaomi", category: "Электроника", description: "Смартфон с отличной камерой", price: 29990 },
-      { id: nanoid(8), title: "Пылесос Dyson", category: "Бытовая техника", description: "Беспроводной пылесос", price: 54990 },
-      { id: nanoid(8), title: "Фитнес-браслет", category: "Электроника", description: "Трекер активности", price: 3990 },
-      { id: nanoid(8), title: "Набор посуды", category: "Дом", description: "Кастрюли и сковородки", price: 8990 },
-      { id: nanoid(8), title: "Книга по JavaScript", category: "Книги", description: "Изучаем JavaScript с нуля", price: 1990 },
-      { id: nanoid(8), title: "Рюкзак для ноутбука", category: "Аксессуары", description: "Водонепроницаемый рюкзак", price: 3490 },
-      { id: nanoid(8), title: "Настольная лампа", category: "Дом", description: "LED лампа с регулировкой яркости", price: 2490 }
+      { id: nanoid(8), title: "Кроссовки Nike", category: "Обувь", description: "Спортивная обувь для бега", price: 8990 },
+      { id: nanoid(8), title: "Книга JavaScript", category: "Книги", description: "Изучение JavaScript с нуля", price: 2490 },
+      { id: nanoid(8), title: "Смарт-часы Apple Watch", category: "Электроника", description: "Умные часы с мониторингом здоровья", price: 32990 },
+      { id: nanoid(8), title: "Фитнес-браслет Xiaomi", category: "Электроника", description: "Мониторинг активности и сна", price: 2990 },
+      { id: nanoid(8), title: "Рюкзак городской", category: "Аксессуары", description: "Вместительный рюкзак для ноутбука", price: 3990 },
+      { id: nanoid(8), title: "Набор отверток", category: "Инструменты", description: "Набор из 12 отверток", price: 1290 },
+      { id: nanoid(8), title: "Зарядное устройство", category: "Электроника", description: "Быстрая зарядка для телефона", price: 1590 }
     ];
     products = sampleProducts;
     writeData(PRODUCTS_FILE, products);
-    console.log(`✅ Создано ${products.length} тестовых товаров`);
+    console.log("Созданы тестовые товары");
   }
 });
