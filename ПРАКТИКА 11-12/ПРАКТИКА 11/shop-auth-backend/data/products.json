@@ -1,0 +1,72 @@
+[
+  {
+    "id": "EJYMpjW2",
+    "title": "Ноутбук Lenovo",
+    "category": "Электроника",
+    "description": "Мощный ноутбук для работы и игр",
+    "price": 65998
+  },
+  {
+    "id": "Ktf_I-80",
+    "title": "Наушники Sony",
+    "category": "Аксессуары",
+    "description": "Беспроводные наушники с шумоподавлением",
+    "price": 12990
+  },
+  {
+    "id": "Gm7zMxMj",
+    "title": "Кофеварка DeLonghi",
+    "category": "Бытовая техника",
+    "description": "Автоматическая кофеварка для эспрессо",
+    "price": 45990
+  },
+  {
+    "id": "FISrys3a",
+    "title": "Кроссовки Nike",
+    "category": "Обувь",
+    "description": "Спортивная обувь для бега",
+    "price": 8990
+  },
+  {
+    "id": "fwugX-Fi",
+    "title": "Книга JavaScript",
+    "category": "Книги",
+    "description": "Изучение JavaScript с нуля",
+    "price": 2490
+  },
+  {
+    "id": "0CSPc6zW",
+    "title": "Смарт-часы Apple Watch",
+    "category": "Электроника",
+    "description": "Умные часы с мониторингом здоровья",
+    "price": 32990
+  },
+  {
+    "id": "SuSsOjtD",
+    "title": "Фитнес-браслет Xiaomi",
+    "category": "Электроника",
+    "description": "Мониторинг активности и сна",
+    "price": 2990
+  },
+  {
+    "id": "j0BzXpms",
+    "title": "Рюкзак городской",
+    "category": "Аксессуары",
+    "description": "Вместительный рюкзак для ноутбука",
+    "price": 3990
+  },
+  {
+    "id": "aV83KvcW",
+    "title": "Набор отверток",
+    "category": "Инструменты",
+    "description": "Набор из 12 отверток",
+    "price": 1290
+  },
+  {
+    "id": "FI-YXzIz",
+    "title": "Зарядное устройство",
+    "category": "Электроника",
+    "description": "Быстрая зарядка для телефона",
+    "price": 1590
+  }
+]
