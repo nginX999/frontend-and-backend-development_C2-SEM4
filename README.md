@@ -318,6 +318,7 @@ text
 
 ## Структура проекта
 
+```
 shop-auth-backend/
 ├── app.js
 ├── generate-hash.js
@@ -367,6 +368,7 @@ shop-frontend/
 └── Users/
 ├── UserList.jsx
 └── Users.css
+```
 
 🔑 Тестовые аккаунты
 | Роль | Email | Пароль | Права |
