@@ -23,7 +23,25 @@
     "first_name": "Фывфыв",
     "last_name": "Ффывфыв",
     "role": "user",
-    "isActive": true,
+    "isActive": false,
     "hashedPassword": "$2b$10$imhBzvfWwq3H4TUi641NxuUudTGH7lsQE1jGLv5DC1KAx9dkt6gVK"
+  },
+  {
+    "id": "tQvUIlW3",
+    "email": "asdasdasd@gmail.com",
+    "first_name": "asdasd",
+    "last_name": "asdasd",
+    "role": "user",
+    "isActive": true,
+    "hashedPassword": "$2b$10$I5rfrgvWwxYUGtkFMeJcpOKCJHiJcYsPUqQ1VaQ7yQX5.0gHyCJIy"
+  },
+  {
+    "id": "9mcuY16s",
+    "email": "test@shop.com",
+    "first_name": "Тест",
+    "last_name": "Тест",
+    "role": "user",
+    "isActive": false,
+    "hashedPassword": "$2b$10$rTE4PDK5yc8dr/./lRycM.BmlSrQpoV44f6WneA1Te0tkGjGkqB4a"
   }
 ]

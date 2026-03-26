@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../../api';
 import ProductCard from './ProductCard';
 import Loading from '../Common/Loading';
@@ -9,6 +9,7 @@ export default function ProductList() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadProducts();
@@ -26,6 +27,10 @@ export default function ProductList() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleEdit = (product) => {
+    navigate(`/products/${product.id}/edit`);
   };
 
   const handleDelete = async (id) => {
@@ -55,9 +60,6 @@ export default function ProductList() {
       {products.length === 0 ? (
         <div className="empty-state">
           <p>Нет товаров</p>
-          <Link to="/products/new" className="btn btn-primary">
-            Создать первый товар
-          </Link>
         </div>
       ) : (
         <div className="products-grid">
@@ -65,6 +67,7 @@ export default function ProductList() {
             <ProductCard
               key={product.id}
               product={product}
+              onEdit={handleEdit}
               onDelete={handleDelete}
             />
           ))}

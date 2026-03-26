@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../../api';
 import { useAuth } from '../../context/AuthContext';
 import ProductCard from './ProductCard';
@@ -10,7 +10,8 @@ export default function ProductList() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { hasRole, isAuthenticated } = useAuth();
+  const { hasRole } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadProducts();
@@ -30,6 +31,12 @@ export default function ProductList() {
     }
   };
 
+  // Функция для редактирования - перенаправляет на страницу редактирования
+  const handleEdit = (product) => {
+    navigate(`/products/${product.id}/edit`);
+  };
+
+  // Функция для удаления
   const handleDelete = async (id) => {
     if (!window.confirm('Удалить товар?')) return;
     
@@ -46,7 +53,6 @@ export default function ProductList() {
   if (error) return <div className="error">{error}</div>;
 
   const canCreate = hasRole(['seller', 'admin']);
-  const canDelete = hasRole(['admin']);
 
   return (
     <div className="products-container">
@@ -69,8 +75,8 @@ export default function ProductList() {
             <ProductCard
               key={product.id}
               product={product}
-              onDelete={canDelete ? handleDelete : null}
-              canEdit={canCreate}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
             />
           ))}
         </div>

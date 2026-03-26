@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { api } from '../../api';
+import { useAuth } from '../../context/AuthContext';
 import Loading from '../Common/Loading';
 import './Products.css';
 
@@ -10,6 +11,10 @@ export default function ProductDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const { hasRole } = useAuth();
+  
+  const canEdit = hasRole(['seller', 'admin']);
+  const canDelete = hasRole(['admin']);
 
   useEffect(() => {
     loadProduct();
@@ -54,6 +59,18 @@ export default function ProductDetail() {
       <Link to="/products" className="btn btn-secondary">← Назад</Link>
       
       <div className="product-detail-card">
+        {/* БОЛЬШОЕ ИЗОБРАЖЕНИЕ В ДЕТАЛЯХ */}
+        <div className="product-detail-image">
+          <img 
+            src={product.image || "https://via.placeholder.com/600x400?text=Нет+фото"} 
+            alt={product.title}
+            onError={(e) => {
+              e.target.src = "https://via.placeholder.com/600x400?text=Ошибка+загрузки";
+            }}
+          />
+        </div>
+        {/* КОНЕЦ ИЗОБРАЖЕНИЯ */}
+        
         <h1>{product.title}</h1>
         
         <div className="product-info">
@@ -68,18 +85,27 @@ export default function ProductDetail() {
           </div>
           
           <div className="info-row">
+            <span className="info-label">В наличии:</span>
+            <span className="info-value">{product.stock} шт.</span>
+          </div>
+          
+          <div className="info-row">
             <span className="info-label">Описание:</span>
             <p className="info-value description">{product.description}</p>
           </div>
         </div>
         
         <div className="product-detail-actions">
-          <Link to={`/products/${id}/edit`} className="btn btn-primary">
-            Редактировать
-          </Link>
-          <button onClick={handleDelete} className="btn btn-danger">
-            Удалить
-          </button>
+          {canEdit && (
+            <Link to={`/products/${id}/edit`} className="btn btn-primary">
+              Редактировать
+            </Link>
+          )}
+          {canDelete && (
+            <button onClick={handleDelete} className="btn btn-danger">
+              Удалить
+            </button>
+          )}
         </div>
       </div>
     </div>

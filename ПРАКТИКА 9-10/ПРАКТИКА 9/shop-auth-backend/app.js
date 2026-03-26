@@ -14,7 +14,7 @@ const port = 3003;
 // JWT константы
 const ACCESS_SECRET = "access-secret-key";
 const REFRESH_SECRET = "refresh-secret-key";
-const ACCESS_EXPIRES_IN = "15m";
+const ACCESS_EXPIRES_IN = "1m";
 const REFRESH_EXPIRES_IN = "7d";
 
 // Хранилище для refresh-токенов

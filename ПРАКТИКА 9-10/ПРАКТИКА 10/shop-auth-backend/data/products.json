@@ -4,69 +4,99 @@
     "title": "Ноутбук Lenovo",
     "category": "Электроника",
     "description": "Мощный ноутбук для работы и игр",
-    "price": 65998
+    "price": 65980,
+    "image": "https://www.coxo.ru/upload/opt/pictures2/49e/qpcmky4ghtfs75fsrsp0dsbb5m8hwqel/main_677712_100kb_500px.webp",
+    "stock": 20,
+    "updatedAt": "2026-03-25T18:06:50.139Z"
   },
   {
     "id": "Ktf_I-80",
     "title": "Наушники Sony",
     "category": "Аксессуары",
     "description": "Беспроводные наушники с шумоподавлением",
-    "price": 12990
+    "price": 12991,
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR44u4nWQiQxjNJ3J2fW9_S0AO7MGGX-7BKrg&s",
+    "stock": 22,
+    "updatedAt": "2026-03-25T17:39:34.923Z"
   },
   {
     "id": "Gm7zMxMj",
     "title": "Кофеварка DeLonghi",
     "category": "Бытовая техника",
     "description": "Автоматическая кофеварка для эспрессо",
-    "price": 45990
+    "price": 459911,
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZ-HaYe7GaEN79Ax_jd_j3IRkhtEBvct4Ekg&s",
+    "stock": 200,
+    "updatedAt": "2026-03-25T17:36:28.091Z"
   },
   {
     "id": "FISrys3a",
     "title": "Кроссовки Nike",
     "category": "Обувь",
     "description": "Спортивная обувь для бега",
-    "price": 8990
+    "price": 8990,
+    "image": "https://campioshop.ru/upload/resize_cache/webp/iblock/24b/320_320_2/kg72o2qi2mqu2c909zkeq4mh8na84an3.webp",
+    "stock": 100,
+    "updatedAt": "2026-03-25T17:39:44.183Z"
   },
   {
     "id": "fwugX-Fi",
     "title": "Книга JavaScript",
     "category": "Книги",
     "description": "Изучение JavaScript с нуля",
-    "price": 2490
+    "price": 2490,
+    "image": "https://ir.ozone.ru/s3/multimedia-v/6612134251.jpg",
+    "stock": 19,
+    "updatedAt": "2026-03-25T17:39:50.767Z"
   },
   {
     "id": "0CSPc6zW",
     "title": "Смарт-часы Apple Watch",
     "category": "Электроника",
     "description": "Умные часы с мониторингом здоровья",
-    "price": 32990
+    "price": 32990,
+    "image": "https://technoperry.com/upload/iblock/875/lzoit5zbxentjmufbyhjb13vucys3qub/1.png",
+    "stock": 1000,
+    "updatedAt": "2026-03-25T17:40:00.169Z"
   },
   {
     "id": "SuSsOjtD",
     "title": "Фитнес-браслет Xiaomi",
     "category": "Электроника",
     "description": "Мониторинг активности и сна",
-    "price": 2990
+    "price": 2990,
+    "image": "https://static.ru-mi.com/upload/resize_cache/iblock/7dd/440_440_1/q3s4yr1ox0ikw8iytkycdg1w31y5knnp.jpg",
+    "stock": 2000,
+    "updatedAt": "2026-03-25T17:40:11.920Z"
   },
   {
     "id": "j0BzXpms",
     "title": "Рюкзак городской",
     "category": "Аксессуары",
     "description": "Вместительный рюкзак для ноутбука",
-    "price": 3990
+    "price": 4000,
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQg5TSdR7ig-90qbAzldQEkrpIrdNNKg_PGAQ&s",
+    "stock": 100,
+    "updatedAt": "2026-03-25T18:07:17.909Z"
   },
   {
     "id": "aV83KvcW",
     "title": "Набор отверток",
     "category": "Инструменты",
     "description": "Набор из 12 отверток",
-    "price": 1290
+    "price": 1290,
+    "image": "https://jonnesway-tools.ru/upload/iblock/a26/a263a976078221a60af9907afbfbda77.jpg",
+    "stock": 100,
+    "updatedAt": "2026-03-25T17:40:29.416Z"
   },
   {
     "id": "FI-YXzIz",
     "title": "Зарядное устройство",
     "category": "Электроника",
     "description": "Быстрая зарядка для телефона",
-    "price": 1590
+    "price": 1590,
+    "image": "https://tdtranscom.ru/upload/iblock/39e/39e901f13d8bf7230bc824a2bd9955cc.jpg",
+    "stock": 12,
+    "updatedAt": "2026-03-25T17:40:41.406Z"
   }
 ]
