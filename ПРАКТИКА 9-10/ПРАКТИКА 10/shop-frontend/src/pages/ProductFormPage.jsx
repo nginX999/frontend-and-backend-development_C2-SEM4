@@ -21,8 +21,9 @@ export default function ProductFormPage() {
       setLoading(true);
       const response = await api.getProductById(id);
       setProduct(response.data);
+      console.log('Загружен товар для редактирования:', response.data);
     } catch (err) {
-      console.error(err);
+      console.error('Ошибка загрузки товара:', err);
     } finally {
       setLoading(false);
     }

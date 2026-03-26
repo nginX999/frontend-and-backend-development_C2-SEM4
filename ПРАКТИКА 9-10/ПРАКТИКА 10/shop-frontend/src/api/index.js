@@ -9,7 +9,7 @@ const apiClient = axios.create({
   },
 });
 
-// Interceptor для добавления access-токена к запросам
+// Interceptor для добавления access-токена
 apiClient.interceptors.request.use(
   (config) => {
     const accessToken = localStorage.getItem('accessToken');
@@ -21,7 +21,7 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Interceptor для обработки ошибок и обновления токенов
+// Interceptor для обновления токенов
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -32,7 +32,6 @@ apiClient.interceptors.response.use(
       
       const refreshToken = localStorage.getItem('refreshToken');
       if (!refreshToken) {
-        // Нет refresh-токена, перенаправляем на логин
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
         window.location.href = '/login';
@@ -63,7 +62,6 @@ apiClient.interceptors.response.use(
   }
 );
 
-// API функции
 export const api = {
   // Auth
   register: (userData) => apiClient.post('/auth/register', userData),
@@ -77,6 +75,12 @@ export const api = {
   createProduct: (productData) => apiClient.post('/products', productData),
   updateProduct: (id, productData) => apiClient.put(`/products/${id}`, productData),
   deleteProduct: (id) => apiClient.delete(`/products/${id}`),
+  
+  // Users (только для администратора)
+  getUsers: () => apiClient.get('/users'),
+  getUserById: (id) => apiClient.get(`/users/${id}`),
+  updateUser: (id, userData) => apiClient.put(`/users/${id}`, userData),
+  deleteUser: (id) => apiClient.delete(`/users/${id}`),
 };
 
 export default apiClient;

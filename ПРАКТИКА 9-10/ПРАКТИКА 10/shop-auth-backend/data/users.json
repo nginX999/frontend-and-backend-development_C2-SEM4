@@ -12,5 +12,12 @@
     "first_name": "ASASAS",
     "last_name": "ASASAS",
     "hashedPassword": "$2b$10$wVrImZwzqOE6EJFPascA7etyw1.lkzg72hMT7Gh08MdTSzFQAsJHq"
+  },
+  {
+    "id": "ofuEUkC_",
+    "email": "test1@shop.com",
+    "first_name": "Тест",
+    "last_name": "Тестов",
+    "hashedPassword": "$2b$10$6votl2qr5rbveEYDb2VLDO3sAnQpLHhGpFMgZHaR6EYZ7VNx9STTG"
   }
 ]

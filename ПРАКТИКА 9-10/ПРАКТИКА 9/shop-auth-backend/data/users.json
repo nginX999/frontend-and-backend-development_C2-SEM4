@@ -5,5 +5,12 @@
     "first_name": "Иван",
     "last_name": "Петров",
     "hashedPassword": "$2b$10$Rgu3Q3cXjY7sV.dL2ypSgOoYouWaB/1S43iQ2li9zHo4m348KGsTi"
+  },
+  {
+    "id": "Zdz6FqWZ",
+    "email": "user@example.com",
+    "first_name": "Иван",
+    "last_name": "Петров",
+    "hashedPassword": "$2b$10$XlYqjbbxYAGuKAT6eu10COkRE9rDQIOqaTT2ZYfnBBrZx2YAv6QWa"
   }
 ]
