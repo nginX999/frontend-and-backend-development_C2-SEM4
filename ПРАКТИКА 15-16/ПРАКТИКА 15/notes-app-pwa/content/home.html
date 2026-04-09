@@ -1,0 +1,83 @@
+<div class="home-content">
+  <h2 class="is-center">Добавить заметку</h2>
+  
+  <form id="note-form" class="row g-2">
+    <div class="col-9">
+      <input 
+        type="text" 
+        id="note-input" 
+        class="input" 
+        placeholder="Введите заметку..." 
+        required
+        autocomplete="off"
+      >
+    </div>
+    <div class="col-3">
+      <button type="submit" class="button primary" style="width: 100%;">
+        ➕ Добавить
+      </button>
+    </div>
+  </form>
+  
+  <h2 class="is-center" style="margin-top: 2rem;">Список заметок</h2>
+  <div id="notes-list" class="notes-list" style="list-style: none; padding-left: 0;">
+    <div class="empty-state">✨ Нет заметок. Добавьте первую!</div>
+  </div>
+  <div class="counter" id="notes-counter" style="margin-top: 1rem; text-align: center; color: #6b7280;">
+    Заметок: 0
+  </div>
+</div>
+
+<style>
+  .notes-list {
+    margin-top: 1rem;
+  }
+  
+  .note-item {
+    background: #f9fafb;
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s;
+  }
+  
+  .note-item:hover {
+    background: #f3f4f6;
+    transform: translateX(4px);
+  }
+  
+  .note-text {
+    flex: 1;
+    word-break: break-word;
+  }
+  
+  .delete-btn {
+    background: none;
+    border: none;
+    color: #ef4444;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0 8px;
+    transition: all 0.3s;
+  }
+  
+  .delete-btn:hover {
+    color: #dc2626;
+    transform: scale(1.1);
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: #9ca3af;
+  }
+  
+  .counter {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e5e7eb;
+  }
+</style>

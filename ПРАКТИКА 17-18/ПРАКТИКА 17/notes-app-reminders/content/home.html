@@ -1,0 +1,52 @@
+<div class="home-content">
+  <h2 class="is-center">📝 Быстрая заметка</h2>
+  <form id="note-form" class="row g-2">
+    <div class="col-12">
+      <input type="text" id="note-input" class="input" placeholder="Введите заметку..." required autocomplete="off">
+    </div>
+    <div class="col-12">
+      <button type="submit" class="button primary" style="width: 100%;">➕ Добавить заметку</button>
+    </div>
+  </form>
+
+  <div class="divider" style="margin: 2rem 0; text-align: center; color: #9ca3af;">━━━━━━━━━━━━━━━━━━━━</div>
+
+  <h2 class="is-center">⏰ Заметка с напоминанием</h2>
+  <form id="reminder-form" class="row g-2">
+    <div class="col-12">
+      <input type="text" id="reminder-text" class="input" placeholder="Текст напоминания" required>
+    </div>
+    <div class="col-12">
+      <input type="datetime-local" id="reminder-time" class="input" required>
+    </div>
+    <div class="col-12">
+      <button type="submit" class="button success" style="width: 100%;">🔔 Добавить с напоминанием</button>
+    </div>
+  </form>
+
+  <h2 class="is-center" style="margin-top: 2rem;">📋 Список заметок</h2>
+  <div id="notes-list" class="notes-list"></div>
+  <div class="counter" id="notes-counter" style="margin-top: 1rem; text-align: center;"></div>
+</div>
+
+<style>
+  .notes-list { margin-top: 1rem; }
+  .note-item {
+    background: #f9fafb;
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .note-content { flex: 1; }
+  .note-text { font-size: 1rem; color: #1f2937; }
+  .note-reminder { font-size: 0.75rem; color: #f59e0b; margin-top: 4px; }
+  .delete-btn {
+    background: none; border: none;
+    color: #ef4444; font-size: 20px;
+    cursor: pointer; padding: 0 8px;
+  }
+  .empty-state { text-align: center; padding: 3rem; color: #9ca3af; }
+</style>
