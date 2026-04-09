@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Мои заметки | PWA</title>
+  
+  <!-- Web App Manifest -->
+  <link rel="manifest" href="/manifest.json">
+  
+  <!-- Мета-теги для PWA -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#667eea">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Заметки">
+  
+  <!-- Иконки -->
+  <link rel="apple-touch-icon" href="/icons/launchericon-152x152.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icons/launchericon-192x192.png">
+  <link rel="icon" type="image/png" sizes="128x128" href="/icons/launchericon-128x128.png">
+  <link rel="icon" type="image/x-icon" href="/icons/launchericon-48x48.png">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/chota@latest">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 2rem 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    header h1 {
+      color: white;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    
+    .tabs {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+    
+    .tab {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      padding: 10px 24px;
+      border-radius: 30px;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .tab.active {
+      background: white;
+      color: #667eea;
+    }
+    
+    .tab:hover:not(.active) {
+      background: rgba(255, 255, 255, 0.3);
+    }
+    
+    .status {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: white;
+      padding: 8px 16px;
+      border-radius: 30px;
+      font-size: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 1000;
+    }
+    
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #10b981;
+      animation: pulse 2s infinite;
+    }
+    
+    .status-dot.offline {
+      background: #ef4444;
+    }
+    
+    @keyframes pulse {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    
+    .install-banner {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      background: #667eea;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 12px;
+      display: none;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+    }
+    
+    .install-banner.show {
+      display: flex;
+    }
+    
+    .install-banner button {
+      background: white;
+      color: #667eea;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    
+    @media (max-width: 600px) {
+      .container {
+        margin: 1rem;
+        padding: 1.5rem;
+      }
+      
+      header h1 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>📝 Мои заметки</h1>
+    <div class="tabs">
+      <button id="home-btn" class="tab active">🏠 Главная</button>
+      <button id="about-btn" class="tab">ℹ️ О приложении</button>
+    </div>
+  </header>
+  
+  <!-- Основной контейнер для динамического контента -->
+  <main id="app-content" class="container">
+    <div class="loading">Загрузка...</div>
+  </main>
+  
+  <!-- Индикатор статуса сети -->
+  <div class="status" id="status-indicator">
+    <span class="status-dot" id="status-dot"></span>
+    <span id="status-text">Онлайн</span>
+  </div>
+  
+  <!-- Баннер для установки PWA -->
+  <div class="install-banner" id="install-banner">
+    <span>📱 Установите приложение на устройство</span>
+    <button id="install-btn">Установить</button>
+  </div>
+  
+  <script src="app.js"></script>
+</body>
+</html>

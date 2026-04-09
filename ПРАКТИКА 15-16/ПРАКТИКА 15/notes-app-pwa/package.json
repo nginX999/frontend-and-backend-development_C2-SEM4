@@ -1,0 +1,7 @@
+{
+  "name": "notes-app-pwa",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "http-server --ssl --cert localhost.pem --key localhost-key.pem -p 3000 -o"
+  }
+}
